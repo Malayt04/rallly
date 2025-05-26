@@ -125,6 +125,7 @@ const MonthCalendar: React.FunctionComponent<DateTimePickerProps> = ({
             </div>
             <div className="grid grow grid-cols-7 rounded-md border bg-white shadow-sm">
               {datepicker.days.map((day, i) => {
+                const isPast = dayjs(day.date).isBefore(dayjs(), "day"); // Determine if the day is in the past
                 return (
                   <div
                     // biome-ignore lint/suspicious/noArrayIndexKey: Fix this later
@@ -137,6 +138,7 @@ const MonthCalendar: React.FunctionComponent<DateTimePickerProps> = ({
                     <button
                       type="button"
                       onClick={() => {
+                        if (isPast) return; // Prevent interaction with past dates
                         if (
                           datepicker.selection.some((selectedDate) =>
                             dayjs(selectedDate).isSame(day.date, "day"),
@@ -174,6 +176,7 @@ const MonthCalendar: React.FunctionComponent<DateTimePickerProps> = ({
                           }
                         }
                       }}
+                      disabled={isPast} 
                       className={cn(
                         "group relative flex h-full w-full items-start justify-end rounded-none px-2.5 py-1.5 text-sm font-medium tracking-tight focus:z-10 focus:rounded",
                         {
@@ -182,6 +185,7 @@ const MonthCalendar: React.FunctionComponent<DateTimePickerProps> = ({
                           "bg-gray-50 text-gray-500":
                             day.outOfMonth && !day.isPast,
                           "text-primary-600": day.selected,
+                          "cursor-not-allowed opacity-50": isPast, 
                         },
                       )}
                     >
